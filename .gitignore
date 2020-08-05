@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/MyOepnCV/v16
+/x64
+/Dependencies/inference_engine
+/Dependencies/opencv
+/MyOepnCV/Debug
+/MyOepnCV/x64/Release
