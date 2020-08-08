@@ -156,10 +156,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Detector.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.hpp" />
+    <ClInclude Include="Detector.hpp" />
     <ClInclude Include="grid_mat.hpp" />
     <ClInclude Include="input_wrappers.hpp" />
     <ClInclude Include="net_wrappers.hpp" />
