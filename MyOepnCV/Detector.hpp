@@ -34,11 +34,12 @@ public:
         const std::vector<float>& detectionTresholds,
         const std::map<std::string, std::string>& pluginConfig);
 
+    std::list<Result> ProcessAndReturnResult(InferenceEngine::InferRequest& inferenceReq, const cv::Mat& img);
     InferenceEngine::InferRequest createInferRequest();
-    void setImage(InferenceEngine::InferRequest& inferRequest, const cv::Mat& img);
-    std::list<Result> getResults(InferenceEngine::InferRequest& inferRequest, cv::Size upscale);
 
 private:
+    std::list<Result> getResults(InferenceEngine::InferRequest& inferRequest, cv::Size upscale);
+    void setImage(InferenceEngine::InferRequest& inferRequest, const cv::Mat& img);
     std::vector<float> detectionTresholds;
     std::string detectorInputBlobName;
     std::string detectorOutputBlobName;

@@ -133,3 +133,12 @@ std::list<Detector::Result> Detector::getResults(InferenceEngine::InferRequest& 
 void Detector::Logging(const char* msg) {
     std::cout << msg << std::endl;
 }
+
+std::list<Detector::Result> Detector::ProcessAndReturnResult(InferenceEngine::InferRequest& inferenceReq, const cv::Mat& img)
+{
+    setImage(inferenceReq, img);
+
+    inferenceReq.Infer();
+
+    return getResults(inferenceReq, img.size());
+}

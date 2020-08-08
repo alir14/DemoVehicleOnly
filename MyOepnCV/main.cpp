@@ -51,11 +51,8 @@ int main()
 		if (frame.empty())
 			break;
 
-		detect.setImage(infReq, frame);
-
-		infReq.Infer();
-
-		auto results = detect.getResults(infReq, frame.size());
+		//process
+		auto results = detect.ProcessAndReturnResult(infReq, frame);
 
 		for (Detector::Result result : results)
 		{
