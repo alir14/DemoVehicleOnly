@@ -33,21 +33,40 @@ int main()
 
 	InferenceEngine::InferRequest infReq = detect.createInferRequest();
 
-	cv::Mat frame = cv::imread("D:\\media\\redcar1.jpg");
+	//cv::Mat frame = cv::imread("D:\\media\\redcar1.jpg");
+	cv::Mat frame;
+	std::string path = "D:\\media\\sample.mp4";
+	cv::VideoCapture cap;
 
-	detect.setImage(infReq, frame);
-
-	infReq.Infer();
-
-	auto results = detect.getResults(infReq, frame.size());
-
-	for (Detector::Result result : results)
+	if (!cap.open(path)) 
 	{
-		cv::Rect rect = cv::Rect(result.location.x, result.location.y, result.location.width, result.location.height);
-		cv::rectangle(frame, rect, {255,255,0}, 2);
+		std::cerr << "cannot open the media" << std::endl;
+		return 0;
 	}
 
-	cv::imshow("frame", frame);
+	while (true)
+	{
+		cap >> frame;
+
+		if (frame.empty())
+			break;
+
+		detect.setImage(infReq, frame);
+
+		infReq.Infer();
+
+		auto results = detect.getResults(infReq, frame.size());
+
+		for (Detector::Result result : results)
+		{
+			cv::Rect rect = cv::Rect(result.location.x, result.location.y, result.location.width, result.location.height);
+			cv::rectangle(frame, rect, { 255,255,0 }, 2);
+		}
+
+		cv::imshow("frame", frame);
+
+		if (cv::waitKey(5) >= 0) break;
+	}
 
 	cv::waitKey(0);
 }
