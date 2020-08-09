@@ -38,25 +38,25 @@ int main()
 	InferenceEngine::InferRequest detectInfReq = detect.createInferRequest();
 	InferenceEngine::InferRequest lprInferReq = lpr.createInferRequest();
 
-	cv::Mat frame = cv::imread("D:\\media\\test2.jpg");
-	//cv::Mat frame;
-	//std::string path = "D:\\media\\sample.mp4";
-	//cv::VideoCapture cap;
+	//cv::Mat frame = cv::imread("D:\\media\\test2.jpg");
+	cv::Mat frame;
+	std::string path = "D:\\media\\sample.mp4";
+	cv::VideoCapture cap;
 
-	//if (!cap.open(path)) 
-	//{
-	//	std::cerr << "cannot open the media" << std::endl;
-	//	return 0;
-	//}
+	if (!cap.open(path)) 
+	{
+		std::cerr << "cannot open the media" << std::endl;
+		return 0;
+	}
 
 	cv::Rect rectROI;
 
-	//while (true)
-	//{
-	//	cap >> frame;
+	while (true)
+	{
+		cap >> frame;
 
-	//	if (frame.empty())
-	//		break;
+		if (frame.empty())
+			break;
 
 		//process
 		auto results = detect.ProcessAndReturnResult(detectInfReq, frame);
@@ -88,8 +88,8 @@ int main()
 
 		cv::imshow("frame", frame);
 
-	//	if (cv::waitKey(5) >= 0) break;
-	//}
+		if (cv::waitKey(5) >= 0) break;
+	}
 
 	cv::waitKey(0);
 }
