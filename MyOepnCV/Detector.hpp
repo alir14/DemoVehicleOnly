@@ -1,19 +1,11 @@
 #pragma once
-#include <algorithm>
-#include <chrono>
-#include <iomanip>
 #include <list>
-#include <map>
-#include <memory>
-#include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
-#include <set>
+#include <map>
 
 #include <opencv2/core.hpp>
 #include <inference_engine.hpp>
-#include <samples/common.hpp>
 #include <samples/ocv_common.hpp>
 
 class Detector
@@ -45,6 +37,5 @@ private:
     std::string detectorOutputBlobName;
     InferenceEngine::Core ie_;  // The only reason to store a plugin as to assure that it lives at least as long as ExecutableNetwork
     InferenceEngine::ExecutableNetwork net;
-    void Logging(const char* msg);
 };
 

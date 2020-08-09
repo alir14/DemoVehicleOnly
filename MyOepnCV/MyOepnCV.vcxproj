@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Detector.cpp" />
+    <ClCompile Include="LicensePlateReader.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +165,7 @@
     <ClInclude Include="Detector.hpp" />
     <ClInclude Include="grid_mat.hpp" />
     <ClInclude Include="input_wrappers.hpp" />
+    <ClInclude Include="LicensePlateReader.hpp" />
     <ClInclude Include="net_wrappers.hpp" />
     <ClInclude Include="security_barrier_camera_demo.hpp" />
   </ItemGroup>
