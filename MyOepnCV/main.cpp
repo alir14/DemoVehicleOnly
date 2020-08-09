@@ -38,25 +38,25 @@ int main()
 	InferenceEngine::InferRequest detectInfReq = detect.createInferRequest();
 	InferenceEngine::InferRequest lprInferReq = lpr.createInferRequest();
 
-	//cv::Mat frame = cv::imread("D:\\media\\redcar1.jpg");
-	cv::Mat frame;
-	std::string path = "D:\\media\\sample.mp4";
-	cv::VideoCapture cap;
+	cv::Mat frame = cv::imread("D:\\media\\test2.jpg");
+	//cv::Mat frame;
+	//std::string path = "D:\\media\\sample.mp4";
+	//cv::VideoCapture cap;
 
-	if (!cap.open(path)) 
-	{
-		std::cerr << "cannot open the media" << std::endl;
-		return 0;
-	}
+	//if (!cap.open(path)) 
+	//{
+	//	std::cerr << "cannot open the media" << std::endl;
+	//	return 0;
+	//}
 
 	cv::Rect rectROI;
 
-	while (true)
-	{
-		cap >> frame;
+	//while (true)
+	//{
+	//	cap >> frame;
 
-		if (frame.empty())
-			break;
+	//	if (frame.empty())
+	//		break;
 
 		//process
 		auto results = detect.ProcessAndReturnResult(detectInfReq, frame);
@@ -70,23 +70,26 @@ int main()
 			}
 			else if (result.label == 2)
 			{
-				std::cout << "found a plate" << result.location.x << result.location.y << result.location.width << result.location.height << std::endl;
-
-				rectROI = cv::Rect(abs(result.location.x), abs(result.location.y), result.location.width, result.location.height);
-				
+				rectROI = cv::Rect(abs(result.location.x), abs(result.location.y), result.location.width + 5, result.location.height + 5);
 				cv::rectangle(frame, rectROI, { 255,255,100 }, 2);
-				
-				std::string paltenumber = lpr.ProcessAndReadPalteNumber(lprInferReq, frame, rectROI);
-				
-				if (!paltenumber.empty())
-					cv::putText(frame, paltenumber, cv::Point(20, 50), cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+
+				if (result.confidence > 0.5)
+				{
+					std::string paltenumber = lpr.ProcessAndReadPalteNumber(lprInferReq, frame, rectROI);
+
+					if (!paltenumber.empty())
+					{
+						cv::putText(frame, paltenumber, cv::Point(abs(result.location.x), abs(result.location.y - 5)), 
+							cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+					}
+				}
 			}
 		}
 
 		cv::imshow("frame", frame);
 
-		if (cv::waitKey(5) >= 0) break;
-	}
+	//	if (cv::waitKey(5) >= 0) break;
+	//}
 
 	cv::waitKey(0);
 }
