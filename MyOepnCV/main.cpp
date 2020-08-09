@@ -18,8 +18,8 @@ int main()
 
 	std::map<std::string, std::string> pluginConfig;
 	std::vector<float> thresholdVector{ static_cast<float>(0.5), static_cast<float>(0.5) };
-	std::string vehicleLicense_Model = "D:\\workspace\\openvino\\models\\intel\\vehicle-license-plate-detection-barrier-0106\\FP16\\vehicle-license-plate-detection-barrier-0106.xml";
-	std::string plateLicense_Model = "D:\\workspace\\openvino\\models\\intel\\license-plate-recognition-barrier-0001\\FP16\\license-plate-recognition-barrier-0001.xml";
+	std::string vehicleLicense_Model = "D:\\workspace\\openvino\\models\\intel\\vehicle-license-plate-detection-barrier-0106\\FP32\\vehicle-license-plate-detection-barrier-0106.xml";
+	std::string plateLicense_Model = "D:\\workspace\\openvino\\models\\intel\\license-plate-recognition-barrier-0001\\FP32\\license-plate-recognition-barrier-0001.xml";
 	
 	InferenceEngine::Core ie;
 
@@ -40,7 +40,7 @@ int main()
 
 	//cv::Mat frame = cv::imread("D:\\media\\test2.jpg");
 	cv::Mat frame;
-	std::string path = "D:\\media\\sample.mp4";
+	std::string path = "D:\\media\\aucklandVideo.mp4";
 	cv::VideoCapture cap;
 
 	if (!cap.open(path)) 

@@ -15,19 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="grid_mat.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="input_wrappers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="net_wrappers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="security_barrier_camera_demo.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Detector.hpp">
