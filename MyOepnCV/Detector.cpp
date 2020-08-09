@@ -116,11 +116,20 @@ std::list<Detector::Result> Detector::getResults(InferenceEngine::InferRequest& 
 
 std::list<Detector::Result> Detector::ProcessAndReturnResult(InferenceEngine::InferRequest& inferenceReq, const cv::Mat& img)
 {
-    cv::Mat currentFrame = img.clone();
+    try
+    {
+        cv::Mat currentFrame = img.clone();
 
-    setImage(inferenceReq, currentFrame);
+        setImage(inferenceReq, currentFrame);
 
-    inferenceReq.Infer();
+        inferenceReq.Infer();
 
-    return getResults(inferenceReq, img.size());
+        return getResults(inferenceReq, img.size());
+    }
+    catch (const std::exception& ex)
+    {
+        std::cout << ex.what() << std::endl;
+    }
+    
+    return std::list<Detector::Result>();
 }

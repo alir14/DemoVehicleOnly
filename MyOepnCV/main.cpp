@@ -49,6 +49,8 @@ int main()
 		return 0;
 	}
 
+	cv::Rect rectROI;
+
 	while (true)
 	{
 		cap >> frame;
@@ -61,23 +63,23 @@ int main()
 
 		for (Detector::Result result : results)
 		{
-			switch (result.label)
+			if (result.label == 1)
 			{
-			case 1:
-			{
-				cv::Rect rect = cv::Rect(result.location.x, result.location.y, result.location.width, result.location.height);
-				cv::rectangle(frame, rect, { 255,255,0 }, 2);
-				break;
+				rectROI = cv::Rect(result.location.x, result.location.y, result.location.width, result.location.height);
+				cv::rectangle(frame, rectROI, { 255,255,0 }, 2);
 			}
-			case 2:
+			else if (result.label == 2)
 			{
-				std::string paltenumber = lpr.ProcessAndReadPalteNumber(lprInferReq, frame, result.location);
+				std::cout << "found a plate" << result.location.x << result.location.y << result.location.width << result.location.height << std::endl;
+
+				rectROI = cv::Rect(abs(result.location.x), abs(result.location.y), result.location.width, result.location.height);
+				
+				cv::rectangle(frame, rectROI, { 255,255,100 }, 2);
+				
+				std::string paltenumber = lpr.ProcessAndReadPalteNumber(lprInferReq, frame, rectROI);
+				
 				if (!paltenumber.empty())
 					cv::putText(frame, paltenumber, cv::Point(20, 50), cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
-				break;
-			}
-			default:
-				break;
 			}
 		}
 

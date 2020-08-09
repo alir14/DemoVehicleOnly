@@ -128,11 +128,11 @@ std::string LicensePlateReader::ProcessAndReadPalteNumber(InferenceEngine::Infer
 	try
 	{
 		cv::Mat currentFrame = img.clone();
-		std::cout << "plate setiamge " << std::endl;
+		
 		setImage(inferRequest, currentFrame, plateRect);
-		std::cout << "plate infre " << std::endl;
+		
 		inferRequest.Infer();
-		std::cout << "plate get result " << std::endl;
+		
 		return getResult(inferRequest);
 	}
 	catch (const std::exception& ex)
