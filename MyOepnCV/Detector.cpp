@@ -108,8 +108,8 @@ std::list<Detector::Result> Detector::getResults(InferenceEngine::InferRequest& 
 
         results.push_back(Result{ label, confidence, rect });
 
-        std::cout << "[" << i << "," << label << "] element, prob = " << confidence
-            << "    (" << rect.x << "," << rect.y << ")-(" << rect.width << "," << rect.height << ")" << std::endl;
+        //std::cout << "[" << i << "," << label << "] element, prob = " << confidence
+        //    << "    (" << rect.x << "," << rect.y << ")-(" << rect.width << "," << rect.height << ")" << std::endl;
     }
     return results;
 }

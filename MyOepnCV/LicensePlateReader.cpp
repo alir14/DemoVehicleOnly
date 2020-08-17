@@ -89,8 +89,6 @@ void LicensePlateReader::setImage(InferenceEngine::InferRequest& inferRequest,
 
 std::string LicensePlateReader::getResult(InferenceEngine::InferRequest& inferRequest)
 {
-	std::cout << "plate result " << std::endl;
-
 	static const char* const items[] = {
 		"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 		"", "", "", "",

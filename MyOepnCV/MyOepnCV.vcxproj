@@ -156,14 +156,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ObjBlob.cpp" />
     <ClCompile Include="Detector.cpp" />
     <ClCompile Include="LicensePlateReader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjTracker.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ObjBlob.hpp" />
     <ClInclude Include="Detector.hpp" />
     <ClInclude Include="LicensePlateReader.hpp" />
     <ClInclude Include="net_wrappers.hpp" />
+    <ClInclude Include="ObjTracker.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
