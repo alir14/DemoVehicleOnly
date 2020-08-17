@@ -156,11 +156,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Blob.cpp" />
     <ClCompile Include="Detector.cpp" />
     <ClCompile Include="LicensePlateReader.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlobObj.h" />
     <ClInclude Include="Detector.hpp" />
     <ClInclude Include="LicensePlateReader.hpp" />
     <ClInclude Include="net_wrappers.hpp" />
