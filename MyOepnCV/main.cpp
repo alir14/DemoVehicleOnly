@@ -108,7 +108,7 @@ int main()
 		std::cout << "number of blobs : " << carTracker.blobs.size() << std::endl;
 		
 		//std::cout << "number of current frame blobs : " << carTracker.currentFrameBlobs.size() << std::endl;
-		if ((frameIndex % 2) == 0)
+		if ((frameIndex % 3) == 0)
 		{
 			for (auto& blobItem : carTracker.blobs)
 			{

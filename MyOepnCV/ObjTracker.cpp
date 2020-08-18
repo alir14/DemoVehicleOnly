@@ -3,10 +3,12 @@
 void ObjTracker::matchCurrentFrameBlobsToExistingBlobs(int frameIndex) { 
     std::string detectedValue;
     for (auto& existingBlob : blobs) {
-
         existingBlob.blnCurrentMatchFoundOrNewBlob = false;
 
-        existingBlob.PredictNextPosition();
+        if (existingBlob.blnStillBeingTracked)
+        {
+            existingBlob.PredictNextPosition();
+        }
     }
 
     for (auto& currentFrameBlob : currentFrameBlobs) {
@@ -41,14 +43,17 @@ void ObjTracker::matchCurrentFrameBlobsToExistingBlobs(int frameIndex) {
     }
 
     for (auto& existingBlob : blobs) {
-        std::cout << "checking if tracker is live " << std::endl;
-        if (existingBlob.blnCurrentMatchFoundOrNewBlob == false) {
-            existingBlob.intNumOfConsecutiveFramesWithoutAMatch++;
-        }
+        if (existingBlob.blnStillBeingTracked) 
+        {
+            std::cout << "checking if tracker is live " << std::endl;
+            if (existingBlob.blnCurrentMatchFoundOrNewBlob == false) {
+                existingBlob.intNumOfConsecutiveFramesWithoutAMatch++;
+            }
 
-        if (existingBlob.intNumOfConsecutiveFramesWithoutAMatch >= 5) {
-            std::cout << "tracker is out " << existingBlob.plateNumber << std::endl;
-            existingBlob.blnStillBeingTracked = false;
+            if (existingBlob.intNumOfConsecutiveFramesWithoutAMatch >= 4) {
+                std::cout << "tracker is out " << existingBlob.plateNumber << std::endl;
+                existingBlob.blnStillBeingTracked = false;
+            }
         }
     }
 }
@@ -82,9 +87,9 @@ void ObjTracker::TrackMissedObject(ObjBlob& missedBlob, cv::Mat& currentFrame, c
 
     std::cout << "missed location ----- >" << missedObjPoint.x << " - " << missedObjPoint.y << std::endl;
     
-    cv::Rect frameMargin(60, 60, currentFrame.size().width - 100, currentFrame.size().height - 100);
+    cv::Rect frameMargin(100, 100, currentFrame.size().width - 100, currentFrame.size().height - 100);
     
-    if (lastCenterPoint.inside(frameMargin))
+    if (lastCenterPoint.inside(frameMargin) && missedObjPoint.inside(frameMargin))
     {
         missedBlob.PredictNextPosition();
         
@@ -94,8 +99,10 @@ void ObjTracker::TrackMissedObject(ObjBlob& missedBlob, cv::Mat& currentFrame, c
         missedBlob._boundingRect.x = missedBlob.predictedNextPosition.x;
         missedBlob._boundingRect.y = missedBlob.predictedNextPosition.y;
 
+
         missedBlob.centerPositions.push_back(missedBlob.predictedNextPosition);
 
+        missedBlob.intNumOfConsecutiveFramesWithoutAMatch++;
         missedBlob.blnStillBeingTracked = true;
         std::cout << "after update location is -----> " << missedBlob.centerPositions.back().x << " - " << missedBlob.centerPositions.back().y << std::endl;
     }
