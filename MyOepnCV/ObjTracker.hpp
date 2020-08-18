@@ -13,7 +13,7 @@ public:
 	void addNewBlob(ObjBlob& currentFrameBlob);
 	double distanceBetweenPoints(cv::Point point1, cv::Point point2);
 	void drawBlobInfoOnImage(std::vector<ObjBlob>& blobs, cv::Mat& img);
-	void TrackMissedObject(ObjBlob& missedBlob, int width, int height, int frameIndex);
+	void TrackMissedObject(ObjBlob& missedBlob, cv::Mat& currentFrame, cv::Mat& prevFrame, int frameIndex);
 
 private:
 	void addBlobToExistingBlobs(ObjBlob& currentFrameBlob, int& intIndex, int frameIndex);

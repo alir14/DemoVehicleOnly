@@ -45,7 +45,8 @@ int main()
 	InferenceEngine::InferRequest lprInferReq = lpr.createInferRequest();
 
 	//cv::Mat frame = cv::imread("D:\\media\\test2.jpg");
-	cv::Mat frame, prevFrame;
+	cv::Mat frame, prevFrame, imgDifference, imgThresh;
+
 	std::string path = "D:\\media\\cars2.MP4";
 	cv::VideoCapture cap;
 
@@ -57,9 +58,12 @@ int main()
 
 	cv::Rect rectROI;
 	ObjTracker carTracker;
-	cv::Mat carImage;
+	
 	bool blnFirstFrame = true;
 	int frameIndex = 0;
+
+	cap.read(prevFrame);
+
 	while (true)
 	{
 		cap >> frame;
@@ -75,7 +79,6 @@ int main()
 			if (result.label == 1)
 			{
 				rectROI = cv::Rect(result.location.x, result.location.y, result.location.width, result.location.height);
-				carImage = frame(rectROI);
 
 				cv::rectangle(frame, rectROI, { 255,255,0 }, 2);
 			}
@@ -86,12 +89,14 @@ int main()
 
 				std::string paltenumber = lpr.ProcessAndReadPalteNumber(lprInferReq, frame, rectROI);
 
-				ObjBlob plnBlob(result, paltenumber, frameIndex);
+				ObjBlob plnBlob(result, paltenumber, frameIndex, frame);
 				carTracker.currentFrameBlobs.push_back(plnBlob);
 		
 				if (blnFirstFrame == true)
 				{
+					std::cout << "----- add new item to blob " << frameIndex << std::endl;
 					carTracker.addNewBlob(plnBlob);
+					blnFirstFrame = false;
 				}
 				else
 				{
@@ -101,32 +106,36 @@ int main()
 		}
 
 		std::cout << "number of blobs : " << carTracker.blobs.size() << std::endl;
-
+		
 		//std::cout << "number of current frame blobs : " << carTracker.currentFrameBlobs.size() << std::endl;
-
-		for (auto& blobItem: carTracker.blobs)
+		if ((frameIndex % 5) == 0)
 		{
-			if (blobItem.blnStillBeingTracked == true) {
-				if (blobItem.frameIndex != frameIndex)
-				{
-					std::cout << "sync tracking " << blobItem.frameIndex << " - current " << frameIndex << std::endl;
-					carTracker.TrackMissedObject(blobItem, frame.cols, frame.rows, frameIndex);
-				}
-
-				cv::circle(frame, blobItem.centerPositions.back(), 5, SCALAR_RED, -1);
-				cv::circle(frame, blobItem.predictedNextPosition, 5, SCALAR_GREEN, -1);
-				//std::cout << blobItem.predictedNextPosition.x << " - " << blobItem.predictedNextPosition.y << std::endl;
-
-				if (!blobItem.plateNumber.empty())
-				{
-					cv::putText(frame, blobItem.plateNumber, cv::Point(abs(blobItem._boundingRect.x), abs(blobItem._boundingRect.y - 5)),cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+			for (auto& blobItem : carTracker.blobs)
+			{
+				if (blobItem.blnStillBeingTracked == true) {
+					if (blobItem.frameIndex != frameIndex)
+					{
+						std::cout << "sync tracking " << blobItem.frameIndex << " - current " << frameIndex << std::endl;
+						carTracker.TrackMissedObject(blobItem, frame, prevFrame, frameIndex);
+					}
 				}
 			}
 		}
 
-		blnFirstFrame = false;
-		cv::imshow("frame", frame);
+		for (auto& blobItem : carTracker.blobs)
+		{
+			cv::circle(frame, blobItem.centerPositions.back(), 5, SCALAR_RED, -1);
+			cv::circle(frame, blobItem.predictedNextPosition, 5, SCALAR_GREEN, -1);
+			if (!blobItem.plateNumber.empty())
+			{
+				cv::putText(frame, blobItem.plateNumber, cv::Point(abs(blobItem._boundingRect.x), abs(blobItem._boundingRect.y - 5)), cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+			}
+		}
+
 		carTracker.currentFrameBlobs.clear();
+		prevFrame = frame.clone();
+
+		cv::imshow("frame", frame);
 		frameIndex++;
 		if (cv::waitKey(5) >= 0) break;
 	}
