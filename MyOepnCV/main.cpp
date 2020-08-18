@@ -78,9 +78,9 @@ int main()
 		{
 			if (result.label == 1)
 			{
-				rectROI = cv::Rect(result.location.x, result.location.y, result.location.width, result.location.height);
+				//rectROI = cv::Rect(result.location.x, result.location.y, result.location.width, result.location.height);
 
-				cv::rectangle(frame, rectROI, { 255,255,0 }, 2);
+				//cv::rectangle(frame, rectROI, { 255,255,0 }, 2);
 			}
 			else if (result.label == 2)
 			{
@@ -108,7 +108,7 @@ int main()
 		std::cout << "number of blobs : " << carTracker.blobs.size() << std::endl;
 		
 		//std::cout << "number of current frame blobs : " << carTracker.currentFrameBlobs.size() << std::endl;
-		if ((frameIndex % 5) == 0)
+		if ((frameIndex % 4) == 0)
 		{
 			for (auto& blobItem : carTracker.blobs)
 			{
@@ -124,11 +124,16 @@ int main()
 
 		for (auto& blobItem : carTracker.blobs)
 		{
-			cv::circle(frame, blobItem.centerPositions.back(), 5, SCALAR_RED, -1);
-			cv::circle(frame, blobItem.predictedNextPosition, 5, SCALAR_GREEN, -1);
-			if (!blobItem.plateNumber.empty())
-			{
-				cv::putText(frame, blobItem.plateNumber, cv::Point(abs(blobItem._boundingRect.x), abs(blobItem._boundingRect.y - 5)), cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+			if (blobItem.blnStillBeingTracked == true) {
+				cv::circle(frame, blobItem.centerPositions.back(), 5, SCALAR_RED, -1);
+				cv::circle(frame, blobItem.predictedNextPosition, 5, SCALAR_GREEN, -1);
+				if (!blobItem.plateNumber.empty())
+				{
+					//cv::Point(abs(blobItem._boundingRect.x), abs(blobItem._boundingRect.y - 5)), 
+					cv::putText(frame, blobItem.plateNumber,
+						blobItem.centerPositions.back(),
+						cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+				}
 			}
 		}
 

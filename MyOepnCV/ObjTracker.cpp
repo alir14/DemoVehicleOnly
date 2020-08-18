@@ -75,8 +75,8 @@ void ObjTracker::TrackMissedObject(ObjBlob& missedBlob, cv::Mat& currentFrame, c
     
     cv::Point missedObjPoint = missedBlob.CalculateCarPositoion(currentFrame, prevFrame);
 
-    std::cout << "missedObj point is ... " << missedObjPoint.x << " - " << missedObjPoint.y << std::endl;
-    cv::Rect frameMargin(20, 20, currentFrame.cols - 20, currentFrame.rows - 20);
+    cv::Rect frameMargin(60, 60, currentFrame.size().width - 100, currentFrame.size().height - 100);
+    
     if (missedBlob.centerPositions.back().inside(frameMargin))
     {
         if (missedObjPoint.x == 0 && missedObjPoint.y == 0)

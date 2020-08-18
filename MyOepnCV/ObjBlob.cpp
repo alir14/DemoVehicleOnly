@@ -127,7 +127,6 @@ cv::Point ObjBlob::CalculateCarPositoion(cv::Mat& currentFrame, cv::Mat& prevFra
 	for (unsigned int i = 0; i < contours.size(); i++) {
 		cv::convexHull(contours[i], convexHulls[i]);
 	}
-	drawAndShowContours(imgThresh.size(), convexHulls, "imgConvexHulls");
 
 	for (auto& convexHull : convexHulls) {
 		cv::Rect boundingContour = cv::boundingRect(convexHull);
