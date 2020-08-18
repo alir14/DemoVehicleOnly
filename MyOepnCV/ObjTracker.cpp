@@ -1,7 +1,7 @@
 #include "ObjTracker.hpp"
 
 void ObjTracker::matchCurrentFrameBlobsToExistingBlobs(int frameIndex) { 
-
+    std::string detectedValue;
     for (auto& existingBlob : blobs) {
 
         existingBlob.blnCurrentMatchFoundOrNewBlob = false;
@@ -21,17 +21,20 @@ void ObjTracker::matchCurrentFrameBlobsToExistingBlobs(int frameIndex) {
                 double dblDistance = distanceBetweenPoints(currentFrameBlob.centerPositions.back(), blobs[i].predictedNextPosition);
 
                 if (dblDistance < dblLeastDistance) {
+                    detectedValue = blobs[i].plateNumber;
                     dblLeastDistance = dblDistance;
                     intIndexOfLeastDistance = i;
                 }
             }
         }
 
-        if (dblLeastDistance < currentFrameBlob.dblDiagonalSize * 0.5) {
+        if (detectedValue == currentFrameBlob.plateNumber || 
+            dblLeastDistance < currentFrameBlob.dblDiagonalSize * 0.5) {
+            std::cout << "----- update existing ########################### " << frameIndex << std::endl;
             addBlobToExistingBlobs(currentFrameBlob, intIndexOfLeastDistance, frameIndex);
         }
         else {
-            std::cout << "----- matching olob - add new item to blob " << frameIndex << std::endl;
+            std::cout << "------------------------ matching olob - add new item to blob " << frameIndex << std::endl;
             addNewBlob(currentFrameBlob);
         }
 
@@ -70,26 +73,33 @@ void ObjTracker::addBlobToExistingBlobs(ObjBlob& currentFrameBlob, int& intIndex
 
 void ObjTracker::TrackMissedObject(ObjBlob& missedBlob, cv::Mat& currentFrame, cv::Mat& prevFrame, int frameIndex)
 {
+    cv::Point lastCenterPoint = missedBlob.centerPositions.back();
+
     std::cout << "found a missed item ... " << missedBlob.plateNumber << std::endl;
-    std::cout << "last location ... " << missedBlob.centerPositions.back().x << " - " << missedBlob.centerPositions.back().y << std::endl;
+    std::cout << "last location ... " << lastCenterPoint.x << " - " << lastCenterPoint.y << std::endl;
     
     cv::Point missedObjPoint = missedBlob.CalculateCarPositoion(currentFrame, prevFrame);
 
     cv::Rect frameMargin(60, 60, currentFrame.size().width - 100, currentFrame.size().height - 100);
     
-    if (missedBlob.centerPositions.back().inside(frameMargin))
+    if (lastCenterPoint.inside(frameMargin))
     {
         if (missedObjPoint.x == 0 && missedObjPoint.y == 0)
         {
+            std::cout << "******** Predict *******" << std::endl;
             missedBlob.PredictNextPosition();
             missedObjPoint = missedBlob.predictedNextPosition;
         }
-        
-        missedBlob.detectedObject.location.x = missedObjPoint.x;
-        missedBlob.detectedObject.location.y = missedObjPoint.y;
+        int midX = (missedObjPoint.x + lastCenterPoint.x) / 2;
+        int midY = (missedObjPoint.y + lastCenterPoint.y) / 2;
+
+        missedBlob.detectedObject.location.x = missedObjPoint.x; //midX;
+        missedBlob.detectedObject.location.y = missedObjPoint.y;// midY;
 
         missedBlob._boundingRect.x = missedObjPoint.x;
         missedBlob._boundingRect.y = missedObjPoint.y;
+
+        //cv::Point midPoint(midX, midY);
 
         missedBlob.centerPositions.push_back(missedObjPoint);
 

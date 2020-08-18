@@ -108,7 +108,7 @@ int main()
 		std::cout << "number of blobs : " << carTracker.blobs.size() << std::endl;
 		
 		//std::cout << "number of current frame blobs : " << carTracker.currentFrameBlobs.size() << std::endl;
-		if ((frameIndex % 4) == 0)
+		if ((frameIndex % 3) == 0)
 		{
 			for (auto& blobItem : carTracker.blobs)
 			{
@@ -125,13 +125,12 @@ int main()
 		for (auto& blobItem : carTracker.blobs)
 		{
 			if (blobItem.blnStillBeingTracked == true) {
-				cv::circle(frame, blobItem.centerPositions.back(), 5, SCALAR_RED, -1);
-				cv::circle(frame, blobItem.predictedNextPosition, 5, SCALAR_GREEN, -1);
+				cv::circle(frame, cv::Point(blobItem.detectedObject.location.x, blobItem.detectedObject.location.y), 5, SCALAR_RED, -1);
 				if (!blobItem.plateNumber.empty())
 				{
 					//cv::Point(abs(blobItem._boundingRect.x), abs(blobItem._boundingRect.y - 5)), 
 					cv::putText(frame, blobItem.plateNumber,
-						blobItem.centerPositions.back(),
+						cv::Point(blobItem.detectedObject.location.x, blobItem.detectedObject.location.y),
 						cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
 				}
 			}

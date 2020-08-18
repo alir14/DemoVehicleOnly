@@ -119,31 +119,27 @@ cv::Point ObjBlob::CalculateCarPositoion(cv::Mat& currentFrame, cv::Mat& prevFra
 	cv::Mat imgThreshCopy = imgThresh.clone();
 
 	std::vector<std::vector<cv::Point> > contours;
+	std::vector<cv::Vec4i> hierarchy;
+	cv::findContours(imgThreshCopy, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-	cv::findContours(imgThreshCopy, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-
-	std::vector<std::vector<cv::Point> > convexHulls(contours.size());
-
-	for (unsigned int i = 0; i < contours.size(); i++) {
-		cv::convexHull(contours[i], convexHulls[i]);
+	int idx = 0, largestComp = 0;
+	double maxArea = 0;
+	for (; idx >= 0; idx = hierarchy[idx][0])
+	{
+		const std::vector<cv::Point>& c = contours[idx];
+		double area = fabs(cv::contourArea(cv::Mat(c)));
+		if (area > maxArea)
+		{
+			maxArea = area;
+			largestComp = idx;
+		}
 	}
 
-	for (auto& convexHull : convexHulls) {
-		cv::Rect boundingContour = cv::boundingRect(convexHull);
-		if (boundingContour.area() > 400 &&
-			dblAspectRatio > 0.2 &&
-			dblAspectRatio < 4.0 &&
-			boundingContour.width > 50 &&
-			boundingContour.height > 50 &&
-			dblDiagonalSize > 60.0 &&
-			(cv::contourArea(convexHull) / (double)boundingContour.area()) > 0.7)
-		{
-			cv::Point lastCenterPoint = centerPositions.back();
-			if (lastCenterPoint.inside(boundingContour))
-			{
-				return CalculateCenterPoint(boundingContour);
-			}
-		}
+	cv::Rect boundingContour = cv::boundingRect(contours[largestComp]);
+	cv::Point lastCenterPoint = centerPositions.back();
+	if (lastCenterPoint.inside(boundingContour))
+	{
+		return CalculateCenterPoint(boundingContour);
 	}
 
 	return cv::Point(0, 0);
