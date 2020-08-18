@@ -28,14 +28,14 @@ void ObjTracker::matchCurrentFrameBlobsToExistingBlobs(int frameIndex) {
             }
         }
 
-        if (detectedValue == currentFrameBlob.plateNumber || 
-            dblLeastDistance < currentFrameBlob.dblDiagonalSize * 0.5) {
+        if (dblLeastDistance < currentFrameBlob.dblDiagonalSize * 0.5) {
             std::cout << "----- update existing ########################### " << frameIndex << std::endl;
             addBlobToExistingBlobs(currentFrameBlob, intIndexOfLeastDistance, frameIndex);
         }
         else {
             std::cout << "------------------------ matching olob - add new item to blob " << frameIndex << std::endl;
-            addNewBlob(currentFrameBlob);
+            if (detectedValue != currentFrameBlob.plateNumber)
+                addNewBlob(currentFrameBlob);
         }
 
     }
@@ -76,35 +76,28 @@ void ObjTracker::TrackMissedObject(ObjBlob& missedBlob, cv::Mat& currentFrame, c
     cv::Point lastCenterPoint = missedBlob.centerPositions.back();
 
     std::cout << "found a missed item ... " << missedBlob.plateNumber << std::endl;
-    std::cout << "last location ... " << lastCenterPoint.x << " - " << lastCenterPoint.y << std::endl;
+    std::cout << "last location ----- >" << lastCenterPoint.x << " - " << lastCenterPoint.y << std::endl;
     
     cv::Point missedObjPoint = missedBlob.CalculateCarPositoion(currentFrame, prevFrame);
 
+    std::cout << "missed location ----- >" << missedObjPoint.x << " - " << missedObjPoint.y << std::endl;
+    
     cv::Rect frameMargin(60, 60, currentFrame.size().width - 100, currentFrame.size().height - 100);
     
     if (lastCenterPoint.inside(frameMargin))
     {
-        if (missedObjPoint.x == 0 && missedObjPoint.y == 0)
-        {
-            std::cout << "******** Predict *******" << std::endl;
-            missedBlob.PredictNextPosition();
-            missedObjPoint = missedBlob.predictedNextPosition;
-        }
-        int midX = (missedObjPoint.x + lastCenterPoint.x) / 2;
-        int midY = (missedObjPoint.y + lastCenterPoint.y) / 2;
+        missedBlob.PredictNextPosition();
+        
+        missedBlob.detectedObject.location.x = missedBlob.predictedNextPosition.x;
+        missedBlob.detectedObject.location.y = missedBlob.predictedNextPosition.y;
 
-        missedBlob.detectedObject.location.x = missedObjPoint.x; //midX;
-        missedBlob.detectedObject.location.y = missedObjPoint.y;// midY;
+        missedBlob._boundingRect.x = missedBlob.predictedNextPosition.x;
+        missedBlob._boundingRect.y = missedBlob.predictedNextPosition.y;
 
-        missedBlob._boundingRect.x = missedObjPoint.x;
-        missedBlob._boundingRect.y = missedObjPoint.y;
-
-        //cv::Point midPoint(midX, midY);
-
-        missedBlob.centerPositions.push_back(missedObjPoint);
+        missedBlob.centerPositions.push_back(missedBlob.predictedNextPosition);
 
         missedBlob.blnStillBeingTracked = true;
-        std::cout << "after update location is ... " << missedBlob.centerPositions.back().x << " - " << missedBlob.centerPositions.back().y << std::endl;
+        std::cout << "after update location is -----> " << missedBlob.centerPositions.back().x << " - " << missedBlob.centerPositions.back().y << std::endl;
     }
     else
     {
