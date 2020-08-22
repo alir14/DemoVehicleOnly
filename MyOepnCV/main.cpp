@@ -47,7 +47,8 @@ int main()
 	//cv::Mat frame = cv::imread("D:\\media\\test2.jpg");
 	cv::Mat frame, prevFrame, imgDifference, imgThresh;
 
-	std::string path = "D:\\media\\cars2.MP4";
+	std::string path = "D:\\media\\test.h264"; //cars2.MP4"; OUT.mkv
+		
 	cv::VideoCapture cap;
 
 	if (!cap.open(path)) 
@@ -74,7 +75,7 @@ int main()
 		//process
 		auto results = detect.ProcessAndReturnResult(detectInfReq, frame);
 
-		for (Detector::Result result : results)
+		for (const Detector::Result& result : results)
 		{
 			if (result.label == 1)
 			{

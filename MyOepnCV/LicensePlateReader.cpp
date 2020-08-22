@@ -31,6 +31,8 @@ LicensePlateReader::LicensePlateReader(InferenceEngine::Core& ie,
 		LprInputSeqName = "";
 	}
 
+	std::cout << "++++++++++++++++ LprInputSeqName +++++++++++++++++ " << LprInputSeqName << std::endl;
+
 	InferenceEngine::OutputsDataMap lprOutputInfo(network.getOutputsInfo());
 	if (lprOutputInfo.size() != 1)
 	{
@@ -38,6 +40,9 @@ LicensePlateReader::LicensePlateReader(InferenceEngine::Core& ie,
 	}
 
 	LprOutputName = lprOutputInfo.begin()->first;
+
+	std::cout << " ================= LprOutputName ================= " << LprOutputName << std::endl;
+
 	size_t indexOfSequenceSize = LprOutputName == "" ? 2 : 1;
 
 	maxSequenceSizePerPlate = lprOutputInfo.begin()->second->getTensorDesc().getDims()[indexOfSequenceSize];
