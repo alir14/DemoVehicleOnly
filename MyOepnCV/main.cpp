@@ -47,11 +47,11 @@ int main()
 	//cv::Mat frame = cv::imread("D:\\media\\test2.jpg");
 	cv::Mat frame, prevFrame, imgDifference, imgThresh;
 
-	std::string path = "D:\\media\\test.h264"; //cars2.MP4"; OUT.mkv
-		
+	//std::string path = "D:\\media\\test.h264"; //cars2.MP4"; OUT.mkv
 	cv::VideoCapture cap;
 
-	if (!cap.open(path)) 
+	//if (!cap.open(path)) 
+	if(cap.open("udp://192.168.10.1:11111?overrun_nonfatal=1&fifo_size=5000"))
 	{
 		std::cerr << "cannot open the media" << std::endl;
 		return 0;
@@ -79,9 +79,9 @@ int main()
 		{
 			if (result.label == 1)
 			{
-				//rectROI = cv::Rect(result.location.x, result.location.y, result.location.width, result.location.height);
+				rectROI = cv::Rect(result.location.x, result.location.y, result.location.width, result.location.height);
 
-				//cv::rectangle(frame, rectROI, { 255,255,0 }, 2);
+				cv::rectangle(frame, rectROI, { 255,255,0 }, 2);
 			}
 			else if (result.label == 2)
 			{
